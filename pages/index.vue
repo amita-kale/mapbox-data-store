@@ -1,0 +1,3 @@
+<template>
+    <mapbox></mapbox>
+</template>
