@@ -1,3 +1,5 @@
 <template>
-    <mapbox></mapbox>
+    <!-- <mapbox></mapbox> -->
+    <!-- <gh></gh> -->
+    <mapboxcopy></mapboxcopy>
 </template>
