@@ -110,7 +110,7 @@ const state: any = reactive({
         zoom: 1,
         // maxZoom: 22,
     },
-
+    isEdit: false,
     backend: [],
     name: '',
     color: '',
@@ -130,12 +130,12 @@ async function removeFun(indexValue) {
 
 function EditFun(indexValue) {
     state.show = true;
+
 }
 
 function cancelPopup() {
     state.show = false;
-    // state.mapData.removeLayer();
-    // state.mapData.removeSource();
+    state.Jsondelete.deleteAll();
 }
 async function submitForm() {
     state.show = false;
