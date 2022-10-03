@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   css: [
     "mapbox-gl/dist/mapbox-gl.css",
     "v-mapbox/dist/v-mapbox.css",
+    "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css",
     "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
     "~/assets/css/tailwind.css",
   ],

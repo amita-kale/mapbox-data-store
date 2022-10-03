@@ -7,7 +7,7 @@
                 <ul id="checkboxId">
                     <li v-for="(item, index) in state.layers" :key="index">
                         <input type="checkbox" id="namedvalue" @change="GeoJSONDataToggle($event, index)" />
-                        {{ item.name}}
+                        {{ item.Name}}
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             @click="removeFun(index)">Delete</button>
                     </li>
@@ -82,20 +82,29 @@ function removeFun(i) {
     state.mapData.removeSource(state.layers[i].des.id);
 }
 
-function submitForm() {
-    const obj = {
-        name: state.name,
+async function submitForm() {
+
+    console.log("coordinates", state.des.geometry.coordinates, "geometry", state.des.geometry);
+
+    let obj = {
+        // Id: state.des.id,
+        Id: state.des.id.parseInt,
+        Name: state.name,
+        Property: state.color,
+        geom: state.des.geometry,
         des: state.des,
-        color: state.color,
-        // coor: state.coor
-    }
+        // color: state.color,
+
+    };
+    await $fetch("http://localhost:3001/mapbox", {
+        method: "POST",
+        body: obj,
+    })
+        .then((res) => console.log("Data has been save successfully"))
+        .catch((err) => alert(err));
     console.log("coor:", state.coor, "des", state.des)
     state.layers.push(obj);
-    this.obj = {
-        des: '',
-        color: '',
-        name: '',
-    }
+    this.obj = ''
     console.log("submit data", state.layers);
     state.show = false;
     state.Jsondelete.deleteAll();
@@ -103,16 +112,13 @@ function submitForm() {
 
 }
 
-// flytoFunction(){
-//   //flyto method take to the provided LngLat
 
-// }
 
 function GeoJSONDataToggle(e, index) {
     console.log(e, index)
     console.log("submit toggle", state.layers);
     if (e.target.checked == true) {
-        // console.log("coordinate polygon", state.layers[index].des.geometry.coordinates);
+        console.log(" polygon id", state.layers[index].des.id, "e.des.id", e.des.id);
 
         let colorPick;
 
@@ -170,9 +176,21 @@ function GeoJSONDataToggle(e, index) {
 }
 
 
-function onMapLoaded(map: mapboxgl.Map) {
+async function onMapLoaded(map: mapboxgl.Map) {
+
+    // state.layers = await $fetch(' http://localhost:3001/mapbox');
     state.mapData = map;
-    var Draw = new MapboxDraw();
+    var Draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+            polygon: true,
+            trash: true,
+            line_string: true,
+            point: true
+        },
+
+        defaultMode: 'draw_polygon'
+    });
     map.addControl(Draw, "top-right");
     state.Jsondelete = Draw;
     map.on('draw.create', updateArea);
@@ -219,13 +237,17 @@ function onMapLoaded(map: mapboxgl.Map) {
 
         state.show = true;
         const answer = document.getElementById('calculated-area');
-        // console.log("coordinates and type show", e.features[0]);
+        console.log("coordinates and type show", e.features[0].geometry);
         //let coordinates = e.features[0].geometry.coordinates;
         state.geojsonType = e.features[0].geometry.type;
         state.des = e.features[0];
         state.coor = e.features[0].geometry.coordinates;
         answer.innerHTML = e.features[0].geometry.coordinates;
+
         console.log("state des", state.des);
+
+
+
 
     }
 }
